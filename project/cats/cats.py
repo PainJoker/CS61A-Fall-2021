@@ -215,9 +215,14 @@ def minimum_mewtations(start, goal, limit):
         # END
 
     else:
-        add = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start, goal[1:], limit - 1) + 1 # Fill in these lines
-        remove = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start[1:], goal, limit - 1) + 1
-        substitute = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start[1:], goal[1:], limit - 1) + 1        
+        if start[0] == goal[0]:
+            add = minimum_mewtations(start[1:], goal[1:], limit)
+            remove = minimum_mewtations(start[1:], goal[1:], limit)
+            substitute = minimum_mewtations(start[1:], goal[1:], limit)
+        else:
+            add = minimum_mewtations(start, goal[1:], limit - 1) + 1
+            remove = minimum_mewtations(start[1:], goal, limit - 1) + 1
+            substitute = minimum_mewtations(start[1:], goal[1:], limit - 1) + 1
         # BEGIN
         return min(add, remove, substitute)
         # END
@@ -226,7 +231,29 @@ def minimum_mewtations(start, goal, limit):
 def final_diff(start, goal, limit):
     """A diff function that takes in a string START, a string GOAL, and a number LIMIT.
     If you implement this function, it will be used."""
-    assert False, 'Remove this line to use your final_diff function.'
+    # base case
+    if start == '' or goal == '':
+        return max(len(start), len(goal))
+    elif limit < 0:
+        return 0
+    # recursive case
+    if start[0] == goal[0]:
+        add = minimum_mewtations(start[1:], goal[1:], limit)
+        remove = minimum_mewtations(start[1:], goal[1:], limit)
+        substitute = minimum_mewtations(start[1:], goal[1:], limit)
+        switch = minimum_mewtations(start[1:], goal[1:], limit)
+    elif len(start) >= 2 and len(goal) >= 2 and start[0] == goal[1] and start[1] == goal[0]:
+        add = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
+        remove = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
+        substitute = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
+        switch = minimum_mewtations(start[2:], goal[2:], limit - 1) + 1
+    else:
+        add = minimum_mewtations(start, goal[1:], limit - 1) + 1
+        remove = minimum_mewtations(start[1:], goal, limit - 1) + 1
+        substitute = minimum_mewtations(start[1:], goal[1:], limit - 1) + 1
+        switch = minimum_mewtations(start[1:], goal[1:], limit - 1) + 1
+    # BEGIN
+    return min(add, remove, substitute, switch)
 
 
 FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
@@ -261,7 +288,14 @@ def report_progress(sofar, prompt, user_id, upload):
     0.2
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    correct = 0
+    for i in range(len(sofar)):
+        if sofar[i] != prompt[i]: break
+        else: correct += 1
+    progress = correct / len(prompt)
+    user_info = {'id': user_id, 'progress': progress}
+    upload(user_info)
+    return progress
     # END PROBLEM 8
 
 
@@ -283,7 +317,14 @@ def time_per_word(words, times_per_player):
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    times = []
+    for timestamps in times_per_player:
+        tpw_for_player = []
+        for i in range(len(timestamps) - 1):
+            time_diff = timestamps[i + 1] - timestamps[i]
+            tpw_for_player += [time_diff]
+        times += [tpw_for_player]
+    return match(words, times)
     # END PROBLEM 9
 
 
@@ -305,7 +346,17 @@ def fastest_words(match):
     player_indices = range(len(get_times(match)))  # contains an *index* for each player
     word_indices = range(len(get_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
+    times_per_player = get_times(match)
+    fastest = []
+    for _ in player_indices:
+        fastest += [[]]
+    for word_index in word_indices:
+        candidate = 0
+        for player_index in player_indices:
+            if times_per_player[player_index][word_index] < times_per_player[candidate][word_index]:
+                candidate = player_index
+        fastest[candidate] += [word_at(match, word_index)]
+    return fastest
     # END PROBLEM 10
 
 
