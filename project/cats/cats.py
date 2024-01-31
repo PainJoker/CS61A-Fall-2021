@@ -141,7 +141,13 @@ def autocorrect(typed_word, valid_words, diff_function, limit):
     'testing'
     """
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    candidate = min(valid_words, key=lambda word: diff_function(typed_word, word, limit))
+    if typed_word in valid_words:
+        return typed_word
+    elif diff_function(typed_word, candidate, limit) > limit:
+        return typed_word
+    else:
+        return candidate
     # END PROBLEM 5
 
 
@@ -168,7 +174,16 @@ def feline_flips(start, goal, limit):
     5
     """
     # BEGIN PROBLEM 6
-    assert False, 'Remove this line'
+    # base case
+    if start == '' or goal == '':
+        return max(len(start), len(goal))
+    elif limit < 0:
+        return 0
+    # recursive case
+    if start[0] == goal[0]:
+        return feline_flips(start[1:], goal[1:], limit)
+    else:
+        return feline_flips(start[1:], goal[1:], limit - 1) + 1
     # END PROBLEM 6
 
 
@@ -189,24 +204,22 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-
-    if ______________:  # Fill in the condition
+    if start == '' or goal == '':
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        return max(len(start), len(goal))
         # END
 
-    elif ___________:  # Feel free to remove or add additional cases
+    elif limit < 0:  # Feel free to remove or add additional cases
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        return 0
         # END
 
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
+        add = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start, goal[1:], limit - 1) + 1 # Fill in these lines
+        remove = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start[1:], goal, limit - 1) + 1
+        substitute = minimum_mewtations(start[1:], goal[1:], limit) if start[0] == goal[0] else minimum_mewtations(start[1:], goal[1:], limit - 1) + 1        
         # BEGIN
-        "*** YOUR CODE HERE ***"
+        return min(add, remove, substitute)
         # END
 
 
