@@ -243,9 +243,9 @@ def final_diff(start, goal, limit):
         substitute = minimum_mewtations(start[1:], goal[1:], limit)
         switch = minimum_mewtations(start[1:], goal[1:], limit)
     elif len(start) >= 2 and len(goal) >= 2 and start[0] == goal[1] and start[1] == goal[0]:
-        add = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
-        remove = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
-        substitute = minimum_mewtations(start[1:], goal[1:], limit - 2) + 2
+        add = minimum_mewtations(start[2:], goal[2:], limit - 2) + 2
+        remove = minimum_mewtations(start[2:], goal[2:], limit - 2) + 2
+        substitute = minimum_mewtations(start[2:], goal[2:], limit - 2) + 2
         switch = minimum_mewtations(start[2:], goal[2:], limit - 1) + 1
     else:
         add = minimum_mewtations(start, goal[1:], limit - 1) + 1
