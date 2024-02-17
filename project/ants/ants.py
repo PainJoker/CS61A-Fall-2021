@@ -178,6 +178,8 @@ class ThrowerAnt(Ant):
     implemented = True
     damage = 1
     food_cost = 3
+    min_range = 0
+    max_range = float('inf')
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
 
     def nearest_bee(self):
@@ -187,12 +189,15 @@ class ThrowerAnt(Ant):
         This method returns None if there is no such Bee (or none in range).
         """
         # BEGIN Problem 3 and 4
-        near_place = self.place
-        while not near_place.is_hive:
+        near_place, i = self.place, 0
+        while not near_place.is_hive and i < self.min_range:
+            near_place, i = near_place.entrance, i + 1
+        while self.min_range <= i <= self.max_range and not near_place.is_hive:
             if not near_place.bees:
                 near_place = near_place.entrance
             else:
                 return random_bee(near_place.bees)
+            i += 1
         return None
         # END Problem 3 and 4
 
@@ -222,9 +227,11 @@ class ShortThrower(ThrowerAnt):
 
     name = 'Short'
     food_cost = 2
+    min_range = 0
+    max_range = 3
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
@@ -233,9 +240,11 @@ class LongThrower(ThrowerAnt):
 
     name = 'Long'
     food_cost = 2
+    min_range = 5
+    max_range = float('inf')
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
 
@@ -247,7 +256,7 @@ class FireAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 5
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 5
 
     def __init__(self, health=3):
@@ -262,7 +271,16 @@ class FireAnt(Ant):
         the additional damage if the fire ant dies.
         """
         # BEGIN Problem 5
-        "*** YOUR CODE HERE ***"
+        def reflect_damage(damage):
+            # Attention! iterate the copy of list when need to mutate it.
+            for bee in list(self.place.bees):
+                bee.reduce_health(damage)
+
+        if amount >= self.health:
+            reflect_damage(amount + self.damage)
+        else:
+            reflect_damage(amount)
+        Ant.reduce_health(self, amount)
         # END Problem 5
 
 # BEGIN Problem 6
