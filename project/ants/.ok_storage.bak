@@ -11,3 +11,8 @@
 'Problem 11-correct', (5120, 66)
 'Problem 12-correct', (5632, 66)
 'Problem EC-correct', (6144, 66)
+<<<<<<< HEAD
+=======
+'Problem Optional 1-correct', (6656, 66)
+'Problem Optional 2-correct', (7168, 66)
+>>>>>>> b4be2e0 (✨ feat: finish optional2)
