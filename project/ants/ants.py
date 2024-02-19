@@ -106,6 +106,7 @@ class Ant(Insect):
     implemented = False  # Only implemented Ant classes should be instantiated
     food_cost = 0
     is_container = False
+    blocks_path = True
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, health=1):
@@ -527,7 +528,7 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Special handling for NinjaAnt
         # BEGIN Problem Optional 1
-        return self.place.ant is not None
+        return self.place.ant is not None and self.place.ant.blocks_path is True
         # END Problem Optional 1
 
     def action(self, gamestate):
@@ -596,14 +597,16 @@ class NinjaAnt(Ant):
     name = 'Ninja'
     damage = 1
     food_cost = 5
+    blocks_path = False
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem Optional 1
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem Optional 1
 
     def action(self, gamestate):
         # BEGIN Problem Optional 1
-        "*** YOUR CODE HERE ***"
+        for bee in list(self.place.bees):
+            bee.reduce_health(self.damage)
         # END Problem Optional 1
 
 ############
