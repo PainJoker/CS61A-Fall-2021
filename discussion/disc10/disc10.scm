@@ -72,9 +72,12 @@
 ; expect (1 (2) (3))
 
 (define (tree-sum tree)
-    (if (not? (branches tree))
+    (define (sum-branches branches)
+        (sum (map (lambda (tree) (tree-sum tree)) branches))
+    )
+    (if (eq? (branches tree) '())
         (label tree)
-        (+ (label tree) (sum (map (lambda (tree) (label tree)) (branches tree))))
+        (+ (label tree) (sum-branches (branches tree)))
     )
 )
 
